@@ -1,0 +1,17 @@
+.alert_modal {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+.alert_success {
+    background-color: #078b38;
+}
+
+.alert_error {
+    background-color: #b10c0c;
+}

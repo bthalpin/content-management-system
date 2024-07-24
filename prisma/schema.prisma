@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model subscriptions {
+  subscription_id        Int       @id @default(autoincrement())
+  user_id                Int?
+  stripe_subscription_id String?   @db.VarChar(255)
+  status                 String?   @db.VarChar(255)
+  create_date            DateTime? @db.DateTime(0)
+  modified_date          DateTime? @db.DateTime(0)
+  last_billing_date      DateTime? @db.DateTime(0)
+  next_billing_date      DateTime? @db.DateTime(0)
+}
+
+model users {
+  user_id                Int       @id @default(autoincrement())
+  name                   String?   @db.VarChar(255)
+  email                  String?   @db.VarChar(255)
+  phone                  String?   @db.VarChar(255)
+  company_name           String?   @db.VarChar(255)
+  stripe_customer_id     String?   @db.VarChar(255)
+  is_admin               Boolean?
+  has_upload_permissions Boolean?
+  password               String?   @db.VarChar(255)
+  salt                   String?   @db.VarChar(255)
+  is_pending             Boolean?
+  create_date            DateTime? @db.DateTime(0)
+  modified_date          DateTime? @db.DateTime(0)
+  last_login_date        DateTime? @db.DateTime(0)
+}
