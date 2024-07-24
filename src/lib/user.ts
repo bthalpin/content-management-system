@@ -72,7 +72,7 @@ export const createUser = async (user: User) => {
 }
 
 export const updateUser = async (data: Partial<User>, user_id: number) => {
-    try {
+    try { 
         const updatedUser = await prisma.users.update({
             data,
             where: {
