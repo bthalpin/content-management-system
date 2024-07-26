@@ -73,8 +73,18 @@ export const createUser = async (user: User) => {
 
 export const updateUser = async (data: Partial<User>, user_id: number) => {
     try {
+
+        const existingUser = await findUserByEmail(data.email!)
+console.log(existingUser, user_id)
+        if (existingUser && existingUser.user_id !== user_id) {
+            return {success: false, error: 'A user with that email already exists.'}
+        }
+        
         const updatedUser = await prisma.users.update({
-            data,
+            data: {
+                ...data,
+                modified_date: new Date()
+            },
             where: {
                 user_id
             }
