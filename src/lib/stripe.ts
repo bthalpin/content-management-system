@@ -18,7 +18,7 @@ export const createCustomer = async (name: string, email: string) => {
 export const createCheckout = async (user: User, url: string, customer: string) => {
     try {
         const session = await stripe.checkout.sessions.create({
-            success_url: `${url}`,
+            success_url: `${url}/confirmation?success=true`,
             cancel_url: `${url}`,
             customer,
             line_items: [

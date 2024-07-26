@@ -17,6 +17,6 @@ export async function POST(request: NextRequest) {
     }
 
 	const checkout = await createCheckout(user, url, customer)
-console.log(checkout)
+
 	return Response.json(checkout)
 }

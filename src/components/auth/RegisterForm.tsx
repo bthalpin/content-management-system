@@ -1,22 +1,29 @@
 import { useMainProvider } from "@/contexts/MainContext"
 import fetcher from "@/helpers/fetcher";
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
+type Props = {
+    existingUser?: User | null;
+}
 type Placeholders = {
     [key: string]: string;
 }
 
-const RegisterForm = () => {
+const RegisterForm: React.FC<Props> = ({ existingUser }) => {
 
     const {
         setAlert
     } = useMainProvider()
 
-    const defaultUser = {
+    const defaultEditUser = {
         name: '',
         email: '',
         company_name: '',
         phone: '',
+    }
+
+    const defaultUser = {
+        ...defaultEditUser,
         password: ''
     }
 
@@ -29,6 +36,18 @@ const RegisterForm = () => {
         password
     } = user;
 
+
+    useEffect(() => {
+        if (existingUser) {
+            
+            setUser({
+                name: existingUser.name,
+                email: existingUser.email,
+                company_name: existingUser.company_name,
+                phone: existingUser.phone
+            })
+        }
+    }, [existingUser])
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const placeholderDictionary: Placeholders = {
@@ -54,19 +73,27 @@ const RegisterForm = () => {
             ...!name ? ['Name'] : [],
             ...!email ? ['Email'] : [],
             ...!phone ? ['Phone Number'] : [],
-            ...!password ? ['Password'] : [],
-            ...!confirmPassword ? ['Confirm Password'] : [],
-            ...password && confirmPassword && password !== confirmPassword ? ['Passwords Must Match'] : [],
+            ...!existingUser && !password ? ['Password'] : [],
+            ...!existingUser && !confirmPassword ? ['Confirm Password'] : [],
+            ...!existingUser && password && confirmPassword && password !== confirmPassword ? ['Passwords Must Match'] : [],
         ]
-console.log('HERE', missingFields, user, !name, name)
+        
         if (missingFields.length > 0) {
             return setAlert({ message: `Please fix the following fields: ${new Intl.ListFormat('en-us').format(missingFields)}`, success: false })
         }
-
-        try {console.log(user)
-            const newUser = await fetcher(`/api/user`, 'POST', {user})
+console.log(existingUser)
+        try {
+            const newUser = await fetcher(`/api/user`, 
+                existingUser ? 'PUT' : 'POST', 
+                {
+                    user: {
+                        ...user,
+                        ...existingUser ? { user_id: existingUser.user_id } : {}
+                    }
+                })
 
             if (newUser?.user_id) {
+                localStorage.setItem(`hs-user`, JSON.stringify(newUser))
                 const stripeCheckout = await fetcher(`/api/stripe/checkout`, 'POST', { user: newUser, url: window.location.href })
 
                 if (stripeCheckout.url) {
@@ -95,14 +122,16 @@ console.log('HERE', missingFields, user, !name, name)
                     onChange={handleChange}
                 />
             ))}
-            <input
-                type='password'
-                className={`input`}
-                name={'confirmPassword'}
-                placeholder={'Confirm Password'}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            {!existingUser ? 
+                <input
+                    type='password'
+                    className={`input`}
+                    name={'confirmPassword'}
+                    placeholder={'Confirm Password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                /> 
+            : null}
             <button className={`button button_blue_solid`} onClick={handleSubmit}>Submit</button>
         </div>
     )
