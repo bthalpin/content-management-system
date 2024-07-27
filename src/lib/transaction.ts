@@ -2,7 +2,6 @@ import prisma from "../../prisma";
 
 export const createTransaction = async (transaction: Partial<Transaction>) => {
     try {
-        console.log('CREATING TRANSACTION', transaction)
         const newTransaction = await prisma.transactions.create({
             data: {
                 ...transaction,

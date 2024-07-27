@@ -66,22 +66,22 @@ export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceeded
         const period_end = eventObject.period_end
         const endDate = new Date(new Date(period_start * 1000).setFullYear(new Date(period_start * 1000).getFullYear() + 1))
         
-        console.log('CUSTOMER', customer)
         if (!customer) {
             return 
         }
 
         const user = await findUserByCustomerId(customer)
-        console.log(user, 'USER')
+        
         if (!user) {
             return
         }
         await updateUser({
             is_pending: false
         }, user.user_id)
-console.log('UPDATED USER', period_start, period_end)
+        
         const newSubscription = await createSubscription({
             stripe_subscription_id: subscription,
+            user_id: user.user_id,
             status,
             last_billing_date: new Date(period_start * 1000),
             next_billing_date: endDate
@@ -94,8 +94,7 @@ console.log('UPDATED USER', period_start, period_end)
             status,
             invoice_link: hosted_invoice_url
         })
-        console.log('CREATED SUBSCRIPTION')
-        console.log(eventObject, eventObject.subscription)
+        
     } catch (err) {
         console.error(`Error: /lib/stripe/generateWebhookEvent - ${err}`)
     }

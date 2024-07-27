@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
     let customer = user.stripe_customer_id
     if (!customer) {
         const newCustomer = await createCustomer(user.name, user.email)
-console.log(newCustomer)
+
         if (newCustomer) {
             customer = newCustomer.id
-            console.log(customer)
+            
             await updateUser({stripe_customer_id: customer}, user.user_id)
         }
     }

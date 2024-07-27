@@ -81,7 +81,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser }) => {
         if (missingFields.length > 0) {
             return setAlert({ message: `Please fix the following fields: ${new Intl.ListFormat('en-us').format(missingFields)}`, success: false })
         }
-console.log(existingUser)
+
         try {
             const newUser = await fetcher(`/api/user`, 
                 existingUser ? 'PUT' : 'POST', 
@@ -103,7 +103,6 @@ console.log(existingUser)
                 setAlert({ message: newUser.error ? newUser.error : 'Unable to create user', success: false })
             }
 
-            console.log(newUser, 'HERE')
         } catch (err) {
             console.error(err)
         }

@@ -9,7 +9,7 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET
 
 export async function POST(request: NextRequest) {
     try {
-        console.log(endpointSecret, 'ARRIVED')
+        
         const signature = request.headers.get('stripe-signature') as string;
 
         const payload = await request.text();

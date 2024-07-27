@@ -15,6 +15,7 @@ declare global {
 
     type Subscription = {
         subscription_id: number;
+        user_id: number;
         stripe_subscription_id: string;
         status: string;
         modified_date: Date;

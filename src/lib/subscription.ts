@@ -2,7 +2,6 @@ import prisma from "../../prisma";
 
 export const createSubscription = async (subscription: Partial<Subscription>) => {
     try {
-        console.log('CREATING SUBSCRIPTION', subscription)
         const newSubscription = await prisma.subscriptions.create({
             data: {
                 ...subscription,
