@@ -2,7 +2,8 @@ import prisma from "../../prisma";
 
 export const createSubscription = async (subscription: Partial<Subscription>) => {
     try {
-        const user = await prisma.subscriptions.create({
+        console.log('CREATING SUBSCRIPTION', subscription)
+        const newSubscription = await prisma.subscriptions.create({
             data: {
                 ...subscription,
                 modified_date: new Date(),
@@ -10,7 +11,7 @@ export const createSubscription = async (subscription: Partial<Subscription>) =>
             }
         })
 
-        return user
+        return newSubscription
 
     } catch(err) {
         console.error(`Error: /lib/subscription/createSubscription - ${err}`)
