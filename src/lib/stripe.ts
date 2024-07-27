@@ -1,4 +1,6 @@
 import Stripe from 'stripe'
+import { updateUser, findUserByCustomerId } from './user';
+import { createSubscription } from './subscription';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET
@@ -50,15 +52,37 @@ export const generateWebhookEvent = async (payload: string, signature: string) =
     }
 }
 
-export const handleInvoicePayment = async (event: any) => {
+export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceededEvent) => {
     try {
         const eventObject = event?.data?.object;
 
-        // const {
-        //     customer,
-        //     status,
-        // } = eventObject;
+        const customer = eventObject.customer as string;
+        const status = eventObject.status as string;
+        const subscription = eventObject.subscription  as string;
+        const {
+            period_start,
+            period_end,
+        } = eventObject;
         
+        if (!customer) {
+            return 
+        }
+
+        const user = await findUserByCustomerId(customer)
+
+        if (!user) {
+            return
+        }
+        await updateUser({
+            is_pending: false
+        }, user.user_id)
+
+        await createSubscription({
+            stripe_subscription_id: subscription,
+            status,
+            last_billing_date: new Date(period_start * 1000),
+            next_billing_date: new Date(period_end * 1000)
+        })
         console.log(eventObject, eventObject.subscription)
     } catch (err) {
         console.error(`Error: /lib/stripe/generateWebhookEvent - ${err}`)

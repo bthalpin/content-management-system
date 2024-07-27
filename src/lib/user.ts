@@ -33,6 +33,22 @@ export const findUserByEmail = async (email: string) => {
     }
 }
 
+export const findUserByCustomerId = async (stripe_customer_id: string) => {
+    try {
+        const user = await prisma.users.findFirst({
+            where: {
+                stripe_customer_id
+            }
+        })
+
+        return user
+
+    } catch(err) {
+        console.error(`Error: /lib/user/findUserByCustomerId - ${err}`)
+        return null
+    }
+}
+
 export const createUser = async (user: User) => {
     try {
         const existingUser = await findUserByEmail(user.email)

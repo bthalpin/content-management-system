@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         }
         
         switch (event.type) {
-            case 'payment_intent.succeeded':
+            case 'invoice.payment_succeeded':
                 handleInvoicePayment(event)
             case 'customer.subscription.updated':
                 console.log('Subscription Being updated')

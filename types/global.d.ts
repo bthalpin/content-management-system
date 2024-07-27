@@ -12,6 +12,16 @@ declare global {
         password: string;
         salt: string;
     }
+
+    type Subscription = {
+        subscription_id: number;
+        stripe_subscription_id: string;
+        status: string;
+        modified_date: Date;
+        create_date: Date;
+        last_billing_date: Date;
+        next_billing_date: Date;
+    }
 }
 
 export default global;
