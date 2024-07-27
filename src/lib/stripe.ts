@@ -62,10 +62,9 @@ export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceeded
         const subscription = eventObject.subscription  as string;
         const charge = eventObject.charge  as string;
         const hosted_invoice_url = eventObject.hosted_invoice_url  as string;
-        const {
-            period_start,
-            period_end,
-        } = eventObject;
+        const period_start = eventObject.period_start
+        const period_end = eventObject.period_end
+        const endDate = new Date(new Date(period_start * 1000).setFullYear(new Date(period_start * 1000).getFullYear() + 1))
         
         console.log('CUSTOMER', customer)
         if (!customer) {
@@ -85,7 +84,7 @@ console.log('UPDATED USER', period_start, period_end)
             stripe_subscription_id: subscription,
             status,
             last_billing_date: new Date(period_start * 1000),
-            next_billing_date: new Date(period_end * 1000)
+            next_billing_date: endDate
         })
 
         await createTransaction({
