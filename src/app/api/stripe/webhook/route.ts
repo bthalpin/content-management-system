@@ -1,4 +1,4 @@
-import { createCheckout, createCustomer } from '@/lib/stripe';
+import { createCheckout, createCustomer, generateWebhookEvent, handleInvoicePayment } from '@/lib/stripe';
 import { updateUser } from '@/lib/user';
 import { NextRequest } from 'next/server';
 
@@ -10,23 +10,28 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET
 export async function POST(request: NextRequest) {
     try {
         console.log(endpointSecret, 'ARRIVED')
-        const sig = request.headers.get('stripe-signature') as string;
-console.log('SIG',sig)
+        const signature = request.headers.get('stripe-signature') as string;
+
         const payload = await request.text();
-console.log(payload, 'PAYLOAD')
         
-        if (!sig) {
-            console.log('RETURNING NO SIG')
+        if (!signature) {
             return Response.json(`Webhook Error: No Signature`, {status: 400})
         }
 
-console.log('BEFORE EVENT')
-        const event = stripe.webhooks.constructEvent(payload, sig, endpointSecret!);
-        console.log('AFTER EVENT', event)
+        const event: Stripe.Event | undefined = await generateWebhookEvent(payload, signature)
         
-        // Handle the event
-        console.log(`Unhandled event type ${event.type}`);
-    
+        if (!event) {
+            return Response.json(`Webhook Error: Unable to create event`, {status: 400})
+        }
+        
+        switch (event.type) {
+            case 'payment_intent.succeeded':
+                handleInvoicePayment(event)
+            case 'customer.subscription.updated':
+                console.log('Subscription Being updated')
+            default:
+                Response.json(`Unhandled Event - ${event.type}`)
+        }
     
         return Response.json('')
     } catch (err) {
