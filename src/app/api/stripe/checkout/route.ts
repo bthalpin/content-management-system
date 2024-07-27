@@ -12,11 +12,12 @@ export async function POST(request: NextRequest) {
 
         if (newCustomer) {
             customer = newCustomer.id
+            
             await updateUser({stripe_customer_id: customer}, user.user_id)
         }
     }
 
 	const checkout = await createCheckout(user, url, customer)
-console.log(checkout)
+
 	return Response.json(checkout)
 }

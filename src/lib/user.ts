@@ -33,6 +33,22 @@ export const findUserByEmail = async (email: string) => {
     }
 }
 
+export const findUserByCustomerId = async (stripe_customer_id: string) => {
+    try {
+        const user = await prisma.users.findFirst({
+            where: {
+                stripe_customer_id
+            }
+        })
+
+        return user
+
+    } catch(err) {
+        console.error(`Error: /lib/user/findUserByCustomerId - ${err}`)
+        return null
+    }
+}
+
 export const createUser = async (user: User) => {
     try {
         const existingUser = await findUserByEmail(user.email)
@@ -74,8 +90,8 @@ export const createUser = async (user: User) => {
 export const updateUser = async (data: Partial<User>, user_id: number) => {
     try {
 
-        const existingUser = await findUserByEmail(data.email!)
-console.log(existingUser, user_id)
+        const existingUser = data.email ? await findUserByEmail(data.email!) : null
+
         if (existingUser && existingUser.user_id !== user_id) {
             return {success: false, error: 'A user with that email already exists.'}
         }
