@@ -22,6 +22,16 @@ declare global {
         last_billing_date: Date;
         next_billing_date: Date;
     }
+
+    type Transaction = {
+        transaction_id: number;
+        stripe_charge_id: string;
+        subscription_id: number;
+        payment_date: Date;
+        status: string;
+        invoice_link: string;
+        modified_date: Date;
+    }
 }
 
 export default global;

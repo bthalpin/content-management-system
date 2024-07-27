@@ -1,6 +1,7 @@
 import Stripe from 'stripe'
 import { updateUser, findUserByCustomerId } from './user';
 import { createSubscription } from './subscription';
+import { createTransaction } from './transaction';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET
@@ -59,6 +60,8 @@ export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceeded
         const customer = eventObject.customer as string;
         const status = eventObject.status as string;
         const subscription = eventObject.subscription  as string;
+        const charge = eventObject.charge  as string;
+        const hosted_invoice_url = eventObject.hosted_invoice_url  as string;
         const {
             period_start,
             period_end,
@@ -78,11 +81,19 @@ export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceeded
             is_pending: false
         }, user.user_id)
 console.log('UPDATED USER')
-        await createSubscription({
+        const newSubscription = await createSubscription({
             stripe_subscription_id: subscription,
             status,
             last_billing_date: new Date(period_start * 1000),
             next_billing_date: new Date(period_end * 1000)
+        })
+
+        await createTransaction({
+            stripe_charge_id: charge,
+            subscription_id: newSubscription?.subscription_id,
+            payment_date: new Date(period_start * 1000),
+            status,
+            invoice_link: hosted_invoice_url
         })
         console.log('CREATED SUBSCRIPTION')
         console.log(eventObject, eventObject.subscription)

@@ -90,7 +90,7 @@ export const createUser = async (user: User) => {
 export const updateUser = async (data: Partial<User>, user_id: number) => {
     try {
 
-        const existingUser = await findUserByEmail(data.email!)
+        const existingUser = data.email ? await findUserByEmail(data.email!) : null
 
         if (existingUser && existingUser.user_id !== user_id) {
             return {success: false, error: 'A user with that email already exists.'}
