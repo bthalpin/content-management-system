@@ -80,7 +80,7 @@ export const handleInvoicePayment = async (event: Stripe.InvoicePaymentSucceeded
         await updateUser({
             is_pending: false
         }, user.user_id)
-console.log('UPDATED USER')
+console.log('UPDATED USER', period_start, period_end)
         const newSubscription = await createSubscription({
             stripe_subscription_id: subscription,
             status,
