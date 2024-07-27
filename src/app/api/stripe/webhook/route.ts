@@ -1,28 +1,26 @@
 import { createCheckout, createCustomer } from '@/lib/stripe';
 import { updateUser } from '@/lib/user';
 import { NextRequest } from 'next/server';
-import { NextApiRequest } from 'next';
-import { buffer } from 'micro'
+
 import Stripe from 'stripe'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET
 
-export async function POST(request: NextApiRequest) {
+export async function POST(request: NextRequest) {
     try {
         
-        const sig = request.headers['stripe-signature'];
+        const sig = request.headers.get('stripe-signature') as string;
 
-        let event = request.body;
+        const payload = await request.text();
 
-        const buf = await buffer(request)
         
         if (!sig) {
             return Response.json(`Webhook Error: No Signature`, {status: 400})
         }
 
 
-        event = stripe.webhooks.constructEvent(buf, sig, endpointSecret!);
+        const event = stripe.webhooks.constructEvent(payload, sig, endpointSecret!);
         
         
         // Handle the event
