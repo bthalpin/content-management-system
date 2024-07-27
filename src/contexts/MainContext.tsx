@@ -13,7 +13,7 @@ const MainContext = createContext<MainContextTypes>({} as MainContextTypes)
 
 const MainProvider: React.FC<Props> = ({ children }) => {
     const [alert, setAlert] = useState<{message: string, success: boolean} | null>(null)
-console.log(alert)
+
     const values = {
         alert,
         setAlert

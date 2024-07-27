@@ -1,5 +1,5 @@
 const fetcher = async (url: string, method: string, body?: any) => {
-    try {console.log(body)
+    try {
         const res = await fetch(url, {
             method,
             headers: {

@@ -34,3 +34,13 @@ model users {
   modified_date          DateTime? @db.DateTime(0)
   last_login_date        DateTime? @db.DateTime(0)
 }
+
+model transactions {
+  transaction_id   Int       @id @default(autoincrement())
+  subscription_id  Int?
+  stripe_charge_id String?   @db.VarChar(255)
+  payment_date     DateTime? @db.DateTime(0)
+  status           String?   @db.VarChar(255)
+  invoice_link     String?   @db.VarChar(255)
+  modified_date    DateTime? @db.DateTime(0)
+}
