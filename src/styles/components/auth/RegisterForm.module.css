@@ -1,0 +1,15 @@
+.register_form_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 600px;
+    max-width: 100%;
+    gap: 10px;
+}
+.register_form_container input {
+    width: 100%;
+}
+.register_form_header {
+    font-weight: 500;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
