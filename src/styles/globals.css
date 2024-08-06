@@ -1,12 +1,18 @@
 :root {
-  --max-width: 1100px;
-  --border-radius: 10px;
+  --max-width: 1920px;
+  --border-radius: 5px;
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --blue: #35bff2;
-  --foreground-rgb: 0, 0, 0;
+  --faded-blue: #35c0f207;
+  --dark-blue: #288eb3;
+  --grey: #686868;
+  --background: #f3f3f3;
+  --card-background: #f8f8f8;
+  --card-shadow: 8px 8px 24px #00000042;
+  /* --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
@@ -38,10 +44,10 @@
   --callout-rgb: 238, 240, 241;
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+  --card-border-rgb: 131, 134, 135; */
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
@@ -72,7 +78,7 @@
     --card-rgb: 100, 100, 100;
     --card-border-rgb: 200, 200, 200;
   }
-}
+} */
 
 * {
   box-sizing: border-box;
@@ -88,6 +94,10 @@ body {
 }
 
 body {
+  background-color: var(--background);
+  font-family: system-ui;
+}
+/* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -95,35 +105,41 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
+} */
 
 a {
   color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
-}
+} */
 
 /* Buttons */
 .button {
   padding: 5px 20px;
   background-color: transparent;
-  border: 1px solid transparent;
-  font-weight: 500;
+  border: 2px solid transparent;
+  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   border-radius: var(--border-radius);
   transition: all ease-in-out 0.2s;
 }
-.button:hover {
-  box-shadow: 0rem 0rem 0.5rem #0000002b inset;
+.button_blue_solid:hover {
+  box-shadow: 0rem 0rem 0.2rem var(--dark-blue) inset;
 }
-.button:active {
-  box-shadow: 0rem 0rem 0.5rem #0000005f inset;
+.button_blue_solid:active {
+  box-shadow: 0rem 0rem 0.5rem var(--dark-blue) inset;
+}
+.button_blue_outline:hover {
+  box-shadow: 0rem 0rem 0.2rem #5e5e5e81 inset;
+}
+.button_blue_outline:active {
+  box-shadow: 0rem 0rem 0.35rem #5e5e5e81 inset;
 }
 .button_blue_solid {
   background-color: var(--blue);
@@ -132,7 +148,7 @@ a {
 }
 .button_blue_outline {
   border-color: var(--blue);
-  background-color: #fff;
+  background-color: transparent;
   color: var(--blue);
 }
 .button_blue_text {
@@ -140,11 +156,29 @@ a {
 }
 
 /* Input */
-.input {
-  padding: 5px 10px;
-  border-radius: 5px;
+.input_container {
+  position: relative;
+  padding-top: 5px;
 }
-.input:focus {
+.input_container label {
+  position: absolute;
+  top: -4px;
+  left: 8px;
+  font-size: 14px;
+  color: var(--grey);
+  background: linear-gradient(to top, transparent, #fff, #fff, transparent, transparent);
+  padding: 0 3px 0 2px;
+}
+.input_container > input {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border-color: var(--grey);
+  border-width: 1px;
+}
+.input_container > input:focus {
   outline: 1px solid var(--blue);
-  border-color: var(--blue);
+  border-color: transparent;
+}
+.input_container > label:has(~input:focus) {
+  color: var(--blue);
 }
