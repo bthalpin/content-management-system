@@ -1,0 +1,16 @@
+.modal_wrapper {
+    position: fixed;
+    inset: 0;
+    background-color: #9b9b9b22;
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal_card {
+    border-radius: var(--border-radius);
+    background-color:var(--card-background);
+    padding: 20px;
+    max-width: 90%;
+    box-shadow: var(--card-shadow);
+}

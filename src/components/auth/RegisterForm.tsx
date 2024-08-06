@@ -1,15 +1,17 @@
 import { useMainProvider } from "@/contexts/MainContext"
 import fetcher from "@/helpers/fetcher";
 import React, { useState, useEffect } from "react"
+import styles from '@/styles/components/auth/RegisterForm.module.css';
 
 type Props = {
     existingUser?: User | null;
+    cancel: Function;
 }
 type Placeholders = {
     [key: string]: string;
 }
 
-const RegisterForm: React.FC<Props> = ({ existingUser }) => {
+const RegisterForm: React.FC<Props> = ({ existingUser, cancel }) => {
 
     const {
         setAlert
@@ -97,7 +99,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser }) => {
                 const stripeCheckout = await fetcher(`/api/stripe/checkout`, 'POST', { user: newUser, url: window.location.href })
 
                 if (stripeCheckout.url) {
-                    window.open(stripeCheckout.url)
+                    window.open(stripeCheckout.url, '_self')
                 }
             } else {
                 setAlert({ message: newUser.error ? newUser.error : 'Unable to create user', success: false })
@@ -109,30 +111,43 @@ const RegisterForm: React.FC<Props> = ({ existingUser }) => {
     }
 
     return (
-        <div>
-            {Object.keys(user).map((key, i) => (
-                <input
-                    type={key === 'password' ? 'password' : 'text'}
-                    className={`input`}
-                    key={`input-${i}`}
-                    name={key}
-                    placeholder={placeholderDictionary[key]}
-                    value={user[key as keyof User] ? user[key as keyof User] as string : ''}
-                    onChange={handleChange}
-                />
-            ))}
-            {!existingUser ? 
-                <input
-                    type='password'
-                    className={`input`}
-                    name={'confirmPassword'}
-                    placeholder={'Confirm Password'}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                /> 
-            : null}
-            <button className={`button button_blue_solid`} onClick={handleSubmit}>Submit</button>
-        </div>
+        <>
+        <p className={styles.register_form_header}>REGISTER</p>
+            <div className={styles.register_form_container}>
+                {Object.keys(user).map((key, i) => (
+                    <div className={'input_container'}>
+                        {user[key as keyof User] ?
+                            <label>{placeholderDictionary[key]}</label>
+                            : null}
+                        <input
+                            type={key === 'password' ? 'password' : 'text'}
+                            key={`input-${i}`}
+                            name={key}
+                            placeholder={placeholderDictionary[key]}
+                            value={user[key as keyof User] ? user[key as keyof User] as string : ''}
+                            onChange={handleChange}
+                        />
+                    </div>
+                ))}
+                {!existingUser ? 
+                    <div className={'input_container'}>
+                        {confirmPassword ?
+                            <label>Confirm Password</label>
+                        : null}
+                        <input
+                            type='password'
+                            className={`input`}
+                            name={'confirmPassword'}
+                            placeholder={'Confirm Password'}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        /> 
+                    </div>
+                : null}
+                <button className={`button button_blue_outline `} onClick={() => cancel()}>CANCEL</button>
+                <button className={`button button_blue_solid`} onClick={handleSubmit}>SUBMIT</button>
+            </div>
+        </>
     )
 }
 

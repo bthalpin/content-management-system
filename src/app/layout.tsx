@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Alert from '@/components/Alert'
-import "@/styles/globals.css";
 import { MainProvider } from "@/contexts/MainContext";
 
-const inter = Inter({ subsets: ["latin"] });
+import Alert from '@/components/Alert'
+
+import "@/styles/globals.css";
+
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
 return (
     <html lang="en">
-        <body className={inter.className}>
+        <body >
             <MainProvider>
                 <Alert />
                 {children}

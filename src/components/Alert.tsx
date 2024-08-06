@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useContext } from "react";
+import React, { useEffect } from "react";
 
 import { useMainProvider } from "@/contexts/MainContext";
 import styles from '@/styles/Alert.module.css';
@@ -13,8 +13,6 @@ const Alert: React.FC<Props> = () => {
         alert, 
         setAlert
     } = useMainProvider()
-    console.log(alert)
-
     
     useEffect(() => {
         if (alert) {
